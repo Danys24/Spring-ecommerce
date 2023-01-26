@@ -4,31 +4,45 @@
  */
 package com.proyecto.ecommerce.model;
 
+import jakarta.persistence.*;
 import java.util.Date;
 
 /**
  *
  * @author ACER
  */
+@Entity
+@Table(name="orden")
 public class Orden {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
     private String numero;
     private Date fechaCreacion;
     private Date fechaRecibida;
     
     private Double total;
+    
+    @ManyToOne
+    private Usuario usuario;
+    
+    @OneToOne(mappedBy = "orden")
+    private DetalleOrden detalleOrden;
 
     public Orden() {
     }
 
-    public Orden(Integer id, String numero, Date fechaCreacion, Date fechaRecibida, Double total) {
+    public Orden(Integer id, String numero, Date fechaCreacion, Date fechaRecibida, Double total, Usuario usuario) {
         this.id = id;
         this.numero = numero;
         this.fechaCreacion = fechaCreacion;
         this.fechaRecibida = fechaRecibida;
         this.total = total;
+        this.usuario = usuario;
     }
+
 
     public Integer getId() {
         return id;
@@ -68,6 +82,22 @@ public class Orden {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public DetalleOrden getDetalleOrden() {
+        return detalleOrden;
+    }
+
+    public void setDetalleOrden(DetalleOrden detalleOrden) {
+        this.detalleOrden = detalleOrden;
     }
     
     
