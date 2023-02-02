@@ -26,84 +26,100 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
-    
+
     private final Logger LOGGER = LoggerFactory.getLogger(ProductoController.class);
-    
+
     @Autowired
-    private ProductoServicio productoServicio;  
-    
+    private ProductoServicio productoServicio;
+
     @Autowired
     private UploadFileService upload;
-            
+
     @GetMapping("")
-    public String show(Model model){
+    public String show(Model model) {
         List<Producto> productos = productoServicio.getProductos();
         model.addAttribute("productos", productos);
         return "productos/show";
     }
-    
+
     @GetMapping("/create")
-    public String create(){
+    public String create() {
         return "productos/create";
     }
-    
+
     /**
-     * @RequestParam("img") lo que hace es ir al template create y del input 
-     * de tipo file se toma el id de valor img y almacena todo lo ingresado en
-     * el input en la variable file.
+     * @RequestParam("img") lo que hace es ir al template create y del input de
+     * tipo file se toma el id de valor img y almacena todo lo ingresado en el
+     * input en la variable file.
      * @param producto
      * @param file
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
-    
     @PostMapping("/save")
-    public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException{
-        LOGGER.info("Este es el objeto producto {}",producto);
+    public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
+        LOGGER.info("Este es el objeto producto {}", producto);
         Usuario usuario = new Usuario();
         usuario.setId(1);
         producto.setUsuario(usuario);
-         
+
         //imagen
-        if(producto.getId()== null){//cuando se crea un producto
+        if (producto.getId() == null) {//cuando se crea un producto
             String nombreImagen = upload.saveImage(file);
             producto.setImage(nombreImagen);
-        }else{
-            if(file.isEmpty()){//cuando se edita el producto pero no se cambia la imag en
-                Producto prod = new Producto();
-                prod = productoServicio.getProducto(producto.getId()).get();
-                producto.setImage(prod.getImage());
-            }else{
-                String nombreImagen = upload.saveImage(file);
-                producto.setImage(nombreImagen);
-            }
+        } else {
+
         }
-        
-        
+
         productoServicio.save(producto);
         return "redirect:/productos";
     }
-    
+
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model ){
+    public String edit(@PathVariable Integer id, Model model) {
         Producto producto = new Producto();
         Optional<Producto> optionalProducto = productoServicio.getProducto(id);
         producto = optionalProducto.get();
-        
+
         LOGGER.info("Este es el objeto buscado: {}", producto);
-        model.addAttribute("producto",producto);
-        
+        model.addAttribute("producto", producto);
+
         return "productos/edit";
     }
-    
+
     @PostMapping("/update")
-    public String update(Producto producto){
+    public String update(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
+
+        Producto prod = new Producto();
+        prod = productoServicio.getProducto(producto.getId()).get();
+
+        if (file.isEmpty()) {//cuando se edita el producto pero no se cambia la imag en
+
+            producto.setImage(prod.getImage());
+        } else {
+            //elimina la imagen si no es la por defecto
+            if (!prod.getImage().equals("default.jpg")) {
+                upload.deleteImage(prod.getImage());
+            }
+            
+            producto.setUsuario(prod.getUsuario());
+            String nombreImagen = upload.saveImage(file);
+            producto.setImage(nombreImagen);
+        }
         productoServicio.actualizarProducto(producto);
         return "redirect:/productos";
     }
-    
+
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id){
+    public String delete(@PathVariable Integer id) {
+        Producto p = new Producto();
+        p = productoServicio.getProducto(id).get();
+
+        //elimina la imagen si no es la por defecto
+        if (!p.getImage().equals("default.jpg")) {
+            upload.deleteImage(p.getImage());
+        }
+
         productoServicio.eliminarProducto(id);
         return "redirect:/productos";
     }
