@@ -68,4 +68,10 @@ public class ProductoController {
         productoServicio.actualizarProducto(producto);
         return "redirect:/productos";
     }
+    
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id){
+        productoServicio.eliminarProducto(id);
+        return "redirect:/productos";
+    }
 }
