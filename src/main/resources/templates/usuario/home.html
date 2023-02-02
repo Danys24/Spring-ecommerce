@@ -22,7 +22,7 @@
     <body>
 
         <!-- Navigation -->
-        <div th:insert="~{administrador/template_admin.html::header}">
+        <div th:insert="~{usuario/template_usuario.html::header}">
             
         </div>
 
@@ -45,10 +45,13 @@
                             <p class="card-text" th:text="${prod.nombre}"></p>
                         </div>
                         <div class="card-footer">
-                            <a href="productohome.html" class="btn btn-success">Ver producto</a>
+                            <a th:href="@{/productohome/{id}  (id = ${prod.id})}" class="btn btn-success">Ver producto</a>
                         </div>
                     </div>
                 </div>
+
+                
+
             </div>
             <!-- /.row -->
 
@@ -56,7 +59,7 @@
         <!-- /.container -->
 
         <!-- Footer -->
-        <div th:insert="~{administrador/template_admin.html::footer}">
+        <div th:insert="~{usuario/template_usuario.html::footer}">
             
         </div>
 
