@@ -7,6 +7,8 @@ package com.proyecto.ecommerce.controller;
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.service.ProductoServicio;
+import com.proyecto.ecommerce.service.UploadFileService;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -28,6 +31,9 @@ public class ProductoController {
     
     @Autowired
     private ProductoServicio productoServicio;  
+    
+    @Autowired
+    private UploadFileService upload;
             
     @GetMapping("")
     public String show(Model model){
@@ -41,12 +47,39 @@ public class ProductoController {
         return "productos/create";
     }
     
+    /**
+     * @RequestParam("img") lo que hace es ir al template create y del input 
+     * de tipo file se toma el id de valor img y almacena todo lo ingresado en
+     * el input en la variable file.
+     * @param producto
+     * @param file
+     * @return
+     * @throws IOException 
+     */
+    
     @PostMapping("/save")
-    public String save(Producto producto){
+    public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException{
         LOGGER.info("Este es el objeto producto {}",producto);
         Usuario usuario = new Usuario();
         usuario.setId(1);
         producto.setUsuario(usuario);
+         
+        //imagen
+        if(producto.getId()== null){//cuando se crea un producto
+            String nombreImagen = upload.saveImage(file);
+            producto.setImage(nombreImagen);
+        }else{
+            if(file.isEmpty()){//cuando se edita el producto pero no se cambia la imag en
+                Producto prod = new Producto();
+                prod = productoServicio.getProducto(producto.getId()).get();
+                producto.setImage(prod.getImage());
+            }else{
+                String nombreImagen = upload.saveImage(file);
+                producto.setImage(nombreImagen);
+            }
+        }
+        
+        
         productoServicio.save(producto);
         return "redirect:/productos";
     }
