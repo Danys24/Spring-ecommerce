@@ -5,6 +5,8 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Producto;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,6 +16,7 @@ import java.util.Optional;
 public interface ProductoServicio {
     public Producto save(Producto producto);
     public Optional<Producto> getProducto(Integer id);
+    public List<Producto> getProductos();
     public void actualizarProducto(Producto producto);
     public void eliminarProducto(Integer id);
 }

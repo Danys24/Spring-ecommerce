@@ -6,6 +6,8 @@ package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.respository.ProductoRepository;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,11 @@ public class ProductoServiceImpl implements ProductoServicio {
     @Override
     public Optional<Producto> getProducto(Integer id) {
         return productoRepository.findById(id);
+    }
+    
+    @Override
+    public List<Producto> getProductos() {
+        return productoRepository.findAll();
     }
 
     @Override
