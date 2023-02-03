@@ -7,7 +7,9 @@ package com.proyecto.ecommerce.controller;
 import com.proyecto.ecommerce.model.DetalleOrden;
 import com.proyecto.ecommerce.model.Orden;
 import com.proyecto.ecommerce.model.Producto;
+import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.service.ProductoServicio;
+import com.proyecto.ecommerce.service.UsuarioService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,10 @@ public class HomeController {
     
     @Autowired
     private ProductoServicio productoServicio;
+    
+    @Autowired
+    private UsuarioService usuarioService;
+            
     
     List<DetalleOrden> detalles = new ArrayList();
     
@@ -73,7 +79,12 @@ public class HomeController {
         detalleOrden.setTotal(producto.getPrecio()*cantidad);
         detalleOrden.setProducto(producto);
         
-        detalles.add(detalleOrden);
+        Integer prodcutoid = producto.getId();
+        boolean ingresado = detalles.stream().anyMatch(p -> p.getProducto().getId() == prodcutoid);
+        
+        if(!ingresado){
+            detalles.add(detalleOrden);
+        }
         
         sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
         
@@ -108,4 +119,24 @@ public class HomeController {
         
         return "usuario/carrito";
     }
+    
+    @GetMapping("/getCart")
+    public String getCart(Model model){
+        model.addAttribute("cart", detalles);
+        model.addAttribute("orden", orden);
+        return "usuario/carrito";
+    }
+    
+    @GetMapping("/order")
+    public String order(Model model){
+        
+        Usuario usuario = usuarioService.findById(1).get();
+        
+        model.addAttribute("cart", detalles);
+        model.addAttribute("orden", orden);
+        model.addAttribute("usuario", usuario);
+        
+        return "usuario/resumenorden";
+    }
+    
 }
