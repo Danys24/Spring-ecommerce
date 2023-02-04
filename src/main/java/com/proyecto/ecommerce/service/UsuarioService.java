@@ -5,6 +5,7 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Usuario;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,5 +14,7 @@ import java.util.Optional;
  */
 public interface UsuarioService {
     Optional<Usuario> findById(Integer id);
+    void registrarUsuario(Usuario usuario);
+    List<Usuario> findAll();
     
 }

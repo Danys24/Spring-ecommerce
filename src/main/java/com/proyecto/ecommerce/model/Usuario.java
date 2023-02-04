@@ -131,6 +131,20 @@ public class Usuario {
     public void setOrdenes(List<Orden> ordenes) {
         this.ordenes = ordenes;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + 
+                ", nombre=" + nombre + 
+                ", userName=" + userName + 
+                ", email=" + email + 
+                ", direccion=" + direccion + 
+                ", telefono=" + telefono + 
+                ", tipo=" + tipo + 
+                ", password=" + password + 
+                ", productos=" + productos + 
+                ", ordenes=" + ordenes + '}';
+    }
         
     
 }
