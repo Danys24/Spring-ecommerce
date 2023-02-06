@@ -16,5 +16,6 @@ public interface UsuarioService {
     Optional<Usuario> findById(Integer id);
     void registrarUsuario(Usuario usuario);
     List<Usuario> findAll();
+    Optional<Usuario> findByEmail(String email);
     
 }

@@ -5,7 +5,9 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Orden;
+import com.proyecto.ecommerce.model.Usuario;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -14,5 +16,7 @@ import java.util.List;
 public interface OrdenService {
     Orden save(Orden orden);
     List<Orden> findAll();
+    Optional<Orden> findById(Integer id);
     String generarNumeroOrden();
+    List<Orden> findByUsuario(Usuario usuario);
 }
